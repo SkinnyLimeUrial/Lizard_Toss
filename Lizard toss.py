@@ -24,7 +24,7 @@ FONT_PATH = "ARCADECLASSIC.ttf"  # Path to your custom font file
 MILK_IMG_PATH = "milk.png"
 
 #milk toggle
-milk_mode = False
+milk_mode = True
 
 # Set up display
 window = pygame.display.set_mode((WIDTH, HEIGHT))
