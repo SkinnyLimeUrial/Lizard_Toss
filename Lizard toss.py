@@ -19,7 +19,8 @@ FOURTH_TRASH_CAN_IMG_PATH = "hungriest_lizard.png"  # Path to the fourth trash c
 FIFTH_TRASH_CAN_IMG_PATH = "trashcan5.png"  # Path to the fifth trash can image
 BACKGROUND_IMG_PATH = "sewer_jungle.jpg"  # Path to the background image
 SPLAT_IMG_PATH = "splat.png"  # Path to the splat image
-SOUDS = ["score3.mp3", "score2.mp3", "score1.mp3", "score4.mp3", "score_splat.mp3"]  # Added a splat sound
+MILK_SPLAT_IMG_PATH="milk_splat.png"
+SOUNDS = ["score3.mp3", "score2.mp3", "score1.mp3", "score4.mp3", "mook.mp3", "score_splat.mp3"]  # Added a splat sound
 FONT_PATH = "ARCADECLASSIC.ttf"  # Path to your custom font file
 MILK_IMG_PATH = "milk.png"
 
@@ -55,6 +56,7 @@ try:
     fifth_trash_can_img = pygame.image.load(FIFTH_TRASH_CAN_IMG_PATH)
     background = pygame.image.load(BACKGROUND_IMG_PATH)
     splat_img = pygame.image.load(SPLAT_IMG_PATH)
+    milk_splat_img = pygame.image.load(MILK_SPLAT_IMG_PATH)
     milk_ball_img = pygame.image.load(MILK_IMG_PATH)
 except pygame.error as e:
     print(f"Unable to load image: {e}")
@@ -66,13 +68,15 @@ scale_factor = 0.06
 paper_ball_img = pygame.transform.scale(paper_ball_img, (int(paper_ball_img.get_width() * scale_factor), int(paper_ball_img.get_height() * scale_factor)))
 milk_ball_img = pygame.transform.scale(milk_ball_img, (int(milk_ball_img.get_width() * scale_factor), int(milk_ball_img.get_height() * scale_factor)))
 splat_img = pygame.transform.scale(splat_img, (int(paper_ball_img.get_width()), int(paper_ball_img.get_height())))
+milk_splat_img = pygame.transform.scale(milk_splat_img, (int(milk_ball_img.get_width()), int(milk_ball_img.get_height())))
+
 background = pygame.transform.scale(background, (WIDTH, HEIGHT))
 fourth_trash_can_img = pygame.transform.scale(fourth_trash_can_img, (200 * 0.25, 200 * 0.25))  # Increase size of fourth trash can
 fifth_trash_can_img = pygame.transform.scale(fifth_trash_can_img, (150 * 0.25, 150 * 0.25))  # Resize the fifth trash can
 
 # Load sounds
 try:
-    score_sounds = [pygame.mixer.Sound(sound) for sound in SOUDS]
+    score_sounds = [pygame.mixer.Sound(sound) for sound in SOUNDS]
 except pygame.error as e:
     print(f"Unable to load sound: {e}")
     pygame.quit()
@@ -224,7 +228,10 @@ while running:
             splat_pos = paper_rect.topleft  # Store the position of the splat
 
             # Play splat sound
-            score_sounds[-1].play()  # Play the last sound in the list (splat sound)
+            if not milk_mode:
+                score_sounds[-1].play()  # Play the last sound in the list (splat sound)
+            else:
+                score_sounds[-2].play()
 
             # Reset paper ball position and velocity
             paper_rect.topleft = (WIDTH // 2, HEIGHT - 75)
@@ -352,6 +359,7 @@ while running:
                         if event.key == pygame.K_b:  # Correct answer
                             milk_mode = True
                             update_paper_ball(milk_ball_img)
+                            update_splat_image(True)
                         waiting_for_answer = False
                         question_asked = False
 
